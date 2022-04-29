@@ -64,6 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="RebarSolid\ViewModel\SolidViewModel.cs" />
+    <Compile Include="ViewModelBase\ViewModelBase.cs" />
+    <Compile Include="ViewModelBase\RelayCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RebarSolid\SolidCommand.cs" />
     <Compile Include="RebarSolid\View\SolidView.xaml.cs">
@@ -72,7 +75,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="RebarSolid\Model\" />
-    <Folder Include="RebarSolid\ViewModel\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

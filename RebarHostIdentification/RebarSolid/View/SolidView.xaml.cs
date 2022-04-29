@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace RebarHostIdentification.RebarSolid.View
+namespace RebarSolid.View
 {
     /// <summary>
     /// Логика взаимодействия для UserControl1.xaml
