@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             Height="180" Width="400"
+             Height="190" Width="400"
         Title="Rebar Host Identification"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
@@ -13,23 +13,25 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="30"/>
-            <RowDefinition/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         
-        <Label Content="Make rebars solid in view" Margin="5" Grid.Column="0" HorizontalAlignment="Center"/>
-        <Label Content="Make rebars unobscured in view" Margin="5" Grid.Column="1" HorizontalAlignment="Center"/>
-        <CheckBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" IsChecked="{Binding IsCheckedSolid}"/>
+        <Label Content="Make rebars solid in view" Margin="0" Grid.Column="0" HorizontalAlignment="Center" />
+        <Label Content="Make rebars unobscured in view" Margin="0" Grid.Column="1" HorizontalAlignment="Center"/>
+        <CheckBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" IsChecked="{Binding IsCheckedSolid}" />
         <CheckBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" IsChecked="{Binding IsCheckedUnobscured}"/>
-        <Label Content="Rebar visibility for:" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Margin="0,0,5,0"/>
-        <ComboBox Width="150" Height="25" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalContentAlignment="Center"
+        <Label Content="Apply visibility for:" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" />
+        <ComboBox Width="250" Height="25" Grid.ColumnSpan="2" Grid.Row="3" HorizontalAlignment="Center"  VerticalContentAlignment="Center"
                   SelectedIndex="{Binding SelectedIndex}">
-            <ComboBoxItem Content="All elements in View"/>
-            <ComboBoxItem Content="Selected element"/>
+            <ComboBoxItem Content="All rebars in view" IsSelected="True"/>
+            <ComboBoxItem Content="Only for selected rebars"/>
+          
         </ComboBox> 
-        <Button Content="Run" Grid.ColumnSpan="2" Grid.Row="3" Height="25" Width="200" Command="{Binding ButtonRun}"/>
+        <Button Content="Run" Grid.ColumnSpan="2" Grid.Row="4" Height="25" Width="200" Command="{Binding ButtonRun}"/>
 
     </Grid>
 </Window>

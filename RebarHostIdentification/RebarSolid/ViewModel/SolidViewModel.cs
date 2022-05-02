@@ -61,7 +61,7 @@ namespace RebarSolid.ViewModel
 
         private int selectedIndex;
 
-        private int SelectedIndex
+        public int SelectedIndex
         {
             get { return selectedIndex; }
             set
