@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Selection;
 using RebarHostIdentification;
 using RebarSolid.View;
 using Utilities;
@@ -15,6 +16,7 @@ namespace RebarSolid.ViewModel
     public class SolidViewModel : ViewModelBase
     {
         private Document Doc { get; }
+        private UIDocument UIDoc { get; }
         private SolidView solidView;
 
         public SolidView SolidView
@@ -57,50 +59,105 @@ namespace RebarSolid.ViewModel
             }
         }
 
+        private int selectedIndex;
+
+        private int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set
+            {
+                selectedIndex = value;
+                OnPropertyChanged(nameof(SelectedIndex));
+            }
+        }
+
         public RelayCommand<object> ButtonRun { get; set; }
 
-        public SolidViewModel(Document doc)
+        public SolidViewModel(UIDocument uidoc)
         {
-            Doc = doc;
+            UIDoc = uidoc;
+            Doc = uidoc.Document;
             ButtonRun = new RelayCommand<object>(p => true, p => ButtonRunAction());
         }
         private void ButtonRunAction()
         {
             this.SolidView.Close();
 
-            //get current view 
-            var currentView = Doc.ActiveView;
-
-            if (currentView is View3D view3D)
+            try
             {
-                var rebars = new FilteredElementCollector(Doc)
-                    .OfClass(typeof(Rebar))
-                    .Cast<Rebar>();
-                var rebarsInArea = new FilteredElementCollector(Doc)
-                    .OfClass(typeof(RebarInSystem))
-                    .Cast<RebarInSystem>();
 
-                using (Transaction tx = new Transaction(Doc))
+                //get current view 
+                var currentView = Doc.ActiveView;
+
+                if (currentView is View3D view3D)
                 {
-                    tx.Start("Rebar Solid");
-                    foreach (var rebar in rebars)
+                    IEnumerable<Rebar> rebars = null;
+                    IEnumerable<RebarInSystem> rebarsInArea = null;
+
+                    if (SelectedIndex == 0)
                     {
-                        rebar.SetSolidInView(view3D, IsCheckedSolid);
-                        rebar.SetUnobscuredInView(view3D, IsCheckedUnobscured);
+                        rebars = new FilteredElementCollector(Doc)
+                                            .OfClass(typeof(Rebar))
+                                            .Cast<Rebar>();
+                        rebarsInArea = new FilteredElementCollector(Doc)
+                       .OfClass(typeof(RebarInSystem))
+                       .Cast<RebarInSystem>();
+                    }
+                    else
+                    {
+                        try
+                        {
+                        rebars = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarFilter(), "Select Rebars and Rebars in Areas").Select(x => Doc.GetElement(x)).Cast<Rebar>();
+                        }
+                        catch
+                        { }
+                        //rebarsInArea = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarFilter(), "Select Rebar").Select(x => Doc.GetElement(x)).Cast<RebarInSystem>();
                     }
 
-                    foreach (var rebarInArea in rebarsInArea)
+                    if (rebars == null) return;
+                 
+                    using (Transaction tx = new Transaction(Doc))
                     {
-                        rebarInArea.SetSolidInView(view3D, IsCheckedSolid);
-                        rebarInArea.SetUnobscuredInView(view3D, IsCheckedUnobscured);
+                        tx.Start("Rebar Solid");
+                        foreach (var rebar in rebars)
+                        {
+                            rebar.SetSolidInView(view3D, IsCheckedSolid);
+                            rebar.SetUnobscuredInView(view3D, IsCheckedUnobscured);
+                        }
+                        if (rebarsInArea != null)
+                        {
+                            foreach (var rebarInArea in rebarsInArea)
+                            {
+                                rebarInArea.SetSolidInView(view3D, IsCheckedSolid);
+                                rebarInArea.SetUnobscuredInView(view3D, IsCheckedUnobscured);
+                            }
+                        }
+                        tx.Commit();
                     }
-                    tx.Commit();
+                }
+                else
+                {
+                    TaskDialog.Show("Rebar Host Identification", "Please open a 3D View");
+
                 }
             }
-            else
+            catch (Exception ex)
             {
-                TaskDialog.Show("Rebar Host Identification", "Please open a 3D View");
+                System.Windows.MessageBox.Show(ex.ToString());
             }
+        }
+    }
+
+    public class RebarFilter : ISelectionFilter
+    {
+        public bool AllowElement(Element elem)
+        {
+            return elem.Category != null && elem is Rebar;
+        }
+
+        public bool AllowReference(Reference reference, XYZ position)
+        {
+            throw new NotImplementedException();
         }
     }
 }

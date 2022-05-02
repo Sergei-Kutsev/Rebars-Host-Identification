@@ -9,23 +9,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RebarHostIdentification.RebarSolid
+
+
+[Transaction(TransactionMode.Manual)]
+class SolidCommand : IExternalCommand
 {
-    [Transaction(TransactionMode.Manual)]
-    class SolidCommand : IExternalCommand
+    public Result Execute(ExternalCommandData commandData, //commandData is a database of the current revit project
+        ref string message, ElementSet elements)
     {
-        public Result Execute(ExternalCommandData commandData, //commandData is a database of the current revit project
-            ref string message, ElementSet elements)
-        {
-            UIDocument uiDoc = commandData.Application.//get access to the UIDocument
-                ActiveUIDocument; //get access to the Document
-            Document doc = uiDoc.Document; //Document is a database of the opened revit project
+        UIDocument uiDoc = commandData.Application.//get access to the UIDocument
+            ActiveUIDocument; //get access to the Document
+       // Document doc = uiDoc.Document; //Document is a database of the opened revit project
 
-            var vm = new SolidViewModel(doc);
-            vm.SolidView.ShowDialog();
+        var vm = new SolidViewModel(uiDoc);
+        vm.SolidView.ShowDialog();
 
-            return Result.Succeeded;
+        return Result.Succeeded;
 
-        }
     }
 }
+

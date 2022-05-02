@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              Height="180" Width="400"
         Title="Rebar Host Identification"
+        ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -14,6 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         
@@ -21,7 +23,13 @@
         <Label Content="Make rebars unobscured in view" Margin="5" Grid.Column="1" HorizontalAlignment="Center"/>
         <CheckBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" IsChecked="{Binding IsCheckedSolid}"/>
         <CheckBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" IsChecked="{Binding IsCheckedUnobscured}"/>
-        <Button Content="Run" Grid.ColumnSpan="2" Grid.Row="2" Height="30" Width="200" Command="{Binding ButtonRun}"/>
+        <Label Content="Rebar visibility for:" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+        <ComboBox Width="150" Height="25" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalContentAlignment="Center"
+                  SelectedIndex="{Binding SelectedIndex}">
+            <ComboBoxItem Content="All elements in View"/>
+            <ComboBoxItem Content="Selected element"/>
+        </ComboBox> 
+        <Button Content="Run" Grid.ColumnSpan="2" Grid.Row="3" Height="25" Width="200" Command="{Binding ButtonRun}"/>
 
     </Grid>
 </Window>

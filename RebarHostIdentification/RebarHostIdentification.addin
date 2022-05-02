@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>RevitTools</Name>
+		<Assembly>RebarHostIdentification/RebarHostIdentification.dll</Assembly>
+		<AddInId>D820A480-B0E6-45FA-9D82-A6786725F64A</AddInId>
+		<FullClassName>App</FullClassName>
+		<VendorId>ADSK</VendorId>
+	</AddIn>
+</RevitAddIns>
