@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             Height="190" Width="400"
+             Height="230" Width="400"
         Title="Rebar Host Identification"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
@@ -17,6 +17,7 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         
@@ -30,9 +31,16 @@
             <ComboBoxItem Content="All rebars in view" IsSelected="True"/>
             <ComboBoxItem Content="Only for selected rebars"/>
             <ComboBoxItem Content="Identify rebars belonged to element"/>
-          
-        </ComboBox> 
-        <Button Content="Run" Grid.ColumnSpan="2" Grid.Row="4" Height="25" Width="200" Command="{Binding ButtonRun}"/>
+        </ComboBox>
+
+        <Label Content="Highlight rebars red" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
+        <CheckBox Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="90,0,0,0" IsChecked="{Binding IsCheckedOverride}"/>
+
+        <Label Content="Reset rebars override" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="13,0,0,0"/>
+        <CheckBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="90,0,0,0" IsChecked="{Binding IsCheckedResetOverride}"/>
+
+
+        <Button Content="Run" Grid.ColumnSpan="2" Grid.Row="5" Height="25" Width="200" Command="{Binding ButtonRun}"/>
 
     </Grid>
 </Window>

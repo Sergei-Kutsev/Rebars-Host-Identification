@@ -47,8 +47,8 @@ namespace RebarSolid.ViewModel
                 OnPropertyChanged(nameof(IsCheckedSolid));
             }
         }
-        private bool isCheckedUnobscured;
 
+        private bool isCheckedUnobscured;
         public bool IsCheckedUnobscured
         {
             get { return isCheckedUnobscured; }
@@ -58,6 +58,30 @@ namespace RebarSolid.ViewModel
                 OnPropertyChanged(nameof(isCheckedUnobscured));
             }
         }
+
+        private bool isCheckedOverride;
+        public bool IsCheckedOverride
+        {
+            get { return isCheckedOverride; }
+            set
+            {
+                isCheckedOverride = value;
+                OnPropertyChanged(nameof(isCheckedOverride));
+            }
+        }
+
+        private bool isCheckedResetOverride;
+        public bool IsCheckedResetOverride
+        {
+            get { return isCheckedResetOverride; }
+            set
+            {
+                isCheckedResetOverride = value;
+                OnPropertyChanged(nameof(isCheckedResetOverride));
+            }
+        }
+
+
 
         private int selectedIndex;
 
@@ -81,7 +105,7 @@ namespace RebarSolid.ViewModel
         }
         private void ButtonRunAction()
         {
-            this.SolidView.Close();
+            SolidView.Close();
 
             try
             {
@@ -91,6 +115,13 @@ namespace RebarSolid.ViewModel
                 {
                     List<Rebar> rebars = null;
                     List<RebarInSystem> rebarsInArea = null;
+
+                    OverrideGraphicSettings overrideGraphicSettings = new OverrideGraphicSettings();
+                    OverrideGraphicSettings resetOverrideGraphicSettings = new OverrideGraphicSettings();
+                    Color color = new Color(255, 0, 0);
+                    FillPatternElement fillPatternElement;
+                    fillPatternElement = FillPatternElement.GetFillPatternElementByName(Doc, FillPatternTarget.Drafting, "<Solid fill>");
+                    overrideGraphicSettings.SetSurfaceForegroundPatternColor(color).SetSurfaceForegroundPatternId(fillPatternElement.Id);
 
                     if (SelectedIndex == 0)
                     {
@@ -123,12 +154,16 @@ namespace RebarSolid.ViewModel
 
                         string elementMark = element.get_Parameter(BuiltInParameter.DOOR_NUMBER).AsString();
 
-
-                       rebars = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
+                        try
+                        {
+                            rebars = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
                                             .OfClass(typeof(Rebar))
                                             .Cast<Rebar>()
-                                            .Where(x=> x.get_Parameter(BuiltInParameter.REBAR_ELEM_HOST_MARK).AsString() == elementMark)
+                                            .Where(x => x.get_Parameter(BuiltInParameter.REBAR_ELEM_HOST_MARK).AsString() == elementMark)
                                             .ToList();
+                        }
+                        catch
+                        { }
                     }
 
 
@@ -141,7 +176,18 @@ namespace RebarSolid.ViewModel
                         {
                             rebar.SetSolidInView(view3D, IsCheckedSolid);
                             rebar.SetUnobscuredInView(view3D, IsCheckedUnobscured);
+
+                            if (IsCheckedOverride)
+                            {
+                                Doc.ActiveView.SetElementOverrides(rebar.Id, overrideGraphicSettings);
+                            }
+                            if (IsCheckedResetOverride)
+                            {
+                                Doc.ActiveView.SetElementOverrides(rebar.Id, resetOverrideGraphicSettings);
+                            }
+
                         }
+
                         if (rebarsInArea != null)
                         {
                             foreach (var rebarInArea in rebarsInArea)
@@ -149,6 +195,7 @@ namespace RebarSolid.ViewModel
                                 rebarInArea.SetSolidInView(view3D, IsCheckedSolid);
                                 rebarInArea.SetUnobscuredInView(view3D, IsCheckedUnobscured);
                             }
+
                         }
                         tx.Commit();
                     }
