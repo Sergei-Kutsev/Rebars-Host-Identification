@@ -29,6 +29,7 @@
                   SelectedIndex="{Binding SelectedIndex}">
             <ComboBoxItem Content="All rebars in view" IsSelected="True"/>
             <ComboBoxItem Content="Only for selected rebars"/>
+            <ComboBoxItem Content="Identify rebars belonged to element"/>
           
         </ComboBox> 
         <Button Content="Run" Grid.ColumnSpan="2" Grid.Row="4" Height="25" Width="200" Command="{Binding ButtonRun}"/>

@@ -85,41 +85,59 @@ namespace RebarSolid.ViewModel
 
             try
             {
-
-                //get current view 
                 var currentView = Doc.ActiveView;
 
                 if (currentView is View3D view3D)
                 {
-                    IEnumerable<Rebar> rebars = null;
-                    IEnumerable<RebarInSystem> rebarsInArea = null;
+                    List<Rebar> rebars = null;
+                    List<RebarInSystem> rebarsInArea = null;
 
                     if (SelectedIndex == 0)
                     {
-                        rebars = new FilteredElementCollector(Doc)
+                        rebars = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
                                             .OfClass(typeof(Rebar))
-                                            .Cast<Rebar>();
+                                            .Cast<Rebar>()
+                                            .ToList();
+
                         rebarsInArea = new FilteredElementCollector(Doc)
                        .OfClass(typeof(RebarInSystem))
-                       .Cast<RebarInSystem>();
+                       .Cast<RebarInSystem>()
+                       .ToList();
                     }
-                    else
+                    else if (SelectedIndex == 1)
                     {
                         try
                         {
-                        rebars = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarFilter(), "Select Rebars and Rebars in Areas").Select(x => Doc.GetElement(x)).Cast<Rebar>();
+                            rebars = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarFilter(), "Select Rebars and Rebars in Areas")
+                                .Select(x => Doc.GetElement(x))
+                                .Cast<Rebar>()
+                                .ToList();
                         }
                         catch
                         { }
-                        //rebarsInArea = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarFilter(), "Select Rebar").Select(x => Doc.GetElement(x)).Cast<RebarInSystem>();
+                    }
+                    else if (SelectedIndex == 2)
+                    {
+                        Reference structuralFraming = UIDoc.Selection.PickObject(ObjectType.Element, "Select structural element");
+                        Element element = Doc.GetElement(structuralFraming);
+
+                        string elementMark = element.get_Parameter(BuiltInParameter.DOOR_NUMBER).AsString();
+
+
+                       rebars = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
+                                            .OfClass(typeof(Rebar))
+                                            .Cast<Rebar>()
+                                            .Where(x=> x.get_Parameter(BuiltInParameter.REBAR_ELEM_HOST_MARK).AsString() == elementMark)
+                                            .ToList();
                     }
 
+
                     if (rebars == null) return;
-                 
+
                     using (Transaction tx = new Transaction(Doc))
                     {
                         tx.Start("Rebar Solid");
-                        foreach (var rebar in rebars)
+                        foreach (Rebar rebar in rebars)
                         {
                             rebar.SetSolidInView(view3D, IsCheckedSolid);
                             rebar.SetUnobscuredInView(view3D, IsCheckedUnobscured);
