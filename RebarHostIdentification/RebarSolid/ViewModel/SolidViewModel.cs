@@ -137,7 +137,7 @@ namespace RebarSolid.ViewModel
                                             .Cast<Rebar>()
                                             .ToList();
 
-                        rebarsInArea = new FilteredElementCollector(Doc)
+                        rebarsInArea = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
                        .OfClass(typeof(RebarInSystem))
                        .Cast<RebarInSystem>()
                        .ToList();
@@ -146,7 +146,7 @@ namespace RebarSolid.ViewModel
                     {
                         try
                         {
-                            rebars = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarFilter(), "Select Rebars and Rebars in Areas")
+                            rebars = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarFilter(), "Выберите отдельные стержни или площади армирования")
                                 .Select(x => Doc.GetElement(x))
                                 .Cast<Rebar>()
                                 .ToList();
