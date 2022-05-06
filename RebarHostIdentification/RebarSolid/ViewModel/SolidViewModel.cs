@@ -120,7 +120,14 @@ namespace RebarSolid.ViewModel
                     OverrideGraphicSettings resetOverrideGraphicSettings = new OverrideGraphicSettings();
                     Color color = new Color(255, 0, 0);
                     FillPatternElement fillPatternElement;
-                    fillPatternElement = FillPatternElement.GetFillPatternElementByName(Doc, FillPatternTarget.Drafting, "<Solid fill>");
+
+                    FilteredElementCollector elements = new FilteredElementCollector(Doc);
+                    FillPatternElement solidFillPattern = elements
+                        .OfClass(typeof(FillPatternElement))
+                        .Cast<FillPatternElement>()
+                        .FirstOrDefault(a => a.GetFillPattern().IsSolidFill);
+
+                    fillPatternElement = FillPatternElement.GetFillPatternElementByName(Doc, FillPatternTarget.Drafting, solidFillPattern.Name);
                     overrideGraphicSettings.SetSurfaceForegroundPatternColor(color).SetSurfaceForegroundPatternId(fillPatternElement.Id);
 
                     if (SelectedIndex == 0)
