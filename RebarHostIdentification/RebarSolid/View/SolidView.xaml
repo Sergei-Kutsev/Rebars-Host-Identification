@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             Height="230" Width="400"
-        Title="Rebar Host Identification"
+             Height="245" Width="450"
+        Title="Графика стержней"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     <Grid>
@@ -17,30 +17,44 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         
-        <Label Content="Make rebars solid in view" Margin="0" Grid.Column="0" HorizontalAlignment="Center" />
-        <Label Content="Make rebars unobscured in view" Margin="0" Grid.Column="1" HorizontalAlignment="Center"/>
-        <CheckBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" IsChecked="{Binding IsCheckedSolid}" />
+        <Label Content="Арматурные стержни как 3D тело" Margin="0" Grid.Column="0" HorizontalAlignment="Center" />
+        <Label Content="Показать неперекрытыми" Margin="0" Grid.Column="1" HorizontalAlignment="Center"/>
+        <CheckBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" IsChecked="{Binding IsCheckedSolid}"    />
         <CheckBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" IsChecked="{Binding IsCheckedUnobscured}"/>
-        <Label Content="Apply visibility for:" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" />
-        <ComboBox Width="250" Height="25" Grid.ColumnSpan="2" Grid.Row="3" HorizontalAlignment="Center"  VerticalContentAlignment="Center"
+        <Label Content="Применить настройки:" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" />
+        <ComboBox Width="280" Height="25" Grid.ColumnSpan="2" Grid.Row="3" HorizontalAlignment="Center"  VerticalContentAlignment="Center"
                   SelectedIndex="{Binding SelectedIndex}">
-            <ComboBoxItem Content="All rebars in view" IsSelected="True"/>
-            <ComboBoxItem Content="Only for selected rebars"/>
-            <ComboBoxItem Content="Identify rebars belonged to element"/>
+            <ComboBoxItem Content="Для всех стержней видимых на 3D виде" IsSelected="True"/>
+            <ComboBoxItem Content="Для выбранных стержней"/>
+            <ComboBoxItem Content="Для стержней выбранного ж/б элемента"/>
         </ComboBox>
 
-        <Label Content="Highlight rebars red" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
-        <CheckBox Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="90,0,0,0" IsChecked="{Binding IsCheckedOverride}"/>
+        <Label Content="Выделить стержни цветом" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"/>
+        <CheckBox Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-100,0,0,0" IsChecked="{Binding IsCheckedOverrideRed}">
+            <CheckBox.Background>
+                <SolidColorBrush Color="Red" Opacity="0.7"/>
+            </CheckBox.Background>
+        </CheckBox>
+        <CheckBox Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0" IsChecked="{Binding IsCheckedOverrideBlue}">
+            <CheckBox.Background>
+                <SolidColorBrush Color="#FF1A9CCD" Opacity="0.9"/>
+            </CheckBox.Background>
+        </CheckBox>
+        <CheckBox Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="100,0,0,0" IsChecked="{Binding IsCheckedOverrideGreen}">
+            <CheckBox.Background>
+                <SolidColorBrush Color="Green" Opacity="0.7"/>
+            </CheckBox.Background>
+        </CheckBox>
+        <Label Content="Сбросить графику стержней" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"/>
+        <CheckBox Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0" IsChecked="{Binding IsCheckedResetOverride}"/>
 
-        <Label Content="Reset rebars override" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="13,0,0,0"/>
-        <CheckBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="90,0,0,0" IsChecked="{Binding IsCheckedResetOverride}"/>
 
-
-        <Button Content="Run" Grid.ColumnSpan="2" Grid.Row="5" Height="25" Width="200" Command="{Binding ButtonRun}"/>
+        <Button Content="Применить" Grid.ColumnSpan="2" Grid.Row="6" Height="25" Width="200" Command="{Binding ButtonRun}"/>
 
     </Grid>
 </Window>

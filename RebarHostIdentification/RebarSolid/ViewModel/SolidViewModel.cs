@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-using RebarHostIdentification;
 using RebarSolid.View;
 using Utilities;
 
@@ -59,17 +56,43 @@ namespace RebarSolid.ViewModel
             }
         }
 
-        private bool isCheckedOverride;
-        public bool IsCheckedOverride
+        //red color
+        private bool isCheckedOverrideRed;
+        public bool IsCheckedOverrideRed
         {
-            get { return isCheckedOverride; }
+            get { return isCheckedOverrideRed; }
             set
             {
-                isCheckedOverride = value;
-                OnPropertyChanged(nameof(isCheckedOverride));
+                isCheckedOverrideRed = value;
+                OnPropertyChanged(nameof(isCheckedOverrideRed));
             }
         }
 
+        //blue color
+        private bool isCheckedOverrideBlue;
+        public bool IsCheckedOverrideBlue
+        {
+            get { return isCheckedOverrideBlue; }
+            set
+            {
+                isCheckedOverrideBlue = value;
+                OnPropertyChanged(nameof(isCheckedOverrideBlue));
+            }
+        }
+
+        //green color
+        private bool isCheckedOverrideGreen;
+        public bool IsCheckedOverrideGreen
+        {
+            get { return isCheckedOverrideGreen; }
+            set
+            {
+                isCheckedOverrideGreen = value;
+                OnPropertyChanged(nameof(isCheckedOverrideGreen));
+            }
+        }
+
+        //reset graphic override
         private bool isCheckedResetOverride;
         public bool IsCheckedResetOverride
         {
@@ -116,19 +139,29 @@ namespace RebarSolid.ViewModel
                     List<Rebar> rebars = null;
                     List<RebarInSystem> rebarsInArea = null;
 
-                    OverrideGraphicSettings overrideGraphicSettings = new OverrideGraphicSettings();
-                    OverrideGraphicSettings resetOverrideGraphicSettings = new OverrideGraphicSettings();
-                    Color color = new Color(255, 0, 0);
-                    FillPatternElement fillPatternElement;
+                    //override graphic for rebars
+                    OverrideGraphicSettings overrideGraphicRed = new OverrideGraphicSettings();
+                    OverrideGraphicSettings overrideGraphicBlue = new OverrideGraphicSettings();
+                    OverrideGraphicSettings overrideGraphicGreen = new OverrideGraphicSettings();
 
+                    OverrideGraphicSettings resetOverrideGraphicSettings = new OverrideGraphicSettings();
+                    Color red = new Color(255, 0, 0);
+                    Color blue = new Color(0, 0, 255);
+                    Color green = new Color(0, 255, 0);
+
+                    //finding the solid pattern in the project
+                    FillPatternElement fillPatternElement;
                     FilteredElementCollector elements = new FilteredElementCollector(Doc);
                     FillPatternElement solidFillPattern = elements
                         .OfClass(typeof(FillPatternElement))
                         .Cast<FillPatternElement>()
                         .FirstOrDefault(a => a.GetFillPattern().IsSolidFill);
 
+                    //set the new graphic vision for the choosen rebars
                     fillPatternElement = FillPatternElement.GetFillPatternElementByName(Doc, FillPatternTarget.Drafting, solidFillPattern.Name);
-                    overrideGraphicSettings.SetSurfaceForegroundPatternColor(color).SetSurfaceForegroundPatternId(fillPatternElement.Id);
+                    overrideGraphicRed.SetSurfaceForegroundPatternColor(red).SetSurfaceForegroundPatternId(fillPatternElement.Id);
+                    overrideGraphicBlue.SetSurfaceForegroundPatternColor(blue).SetSurfaceForegroundPatternId(fillPatternElement.Id);
+                    overrideGraphicGreen.SetSurfaceForegroundPatternColor(green).SetSurfaceForegroundPatternId(fillPatternElement.Id);
 
                     if (SelectedIndex == 0)
                     {
@@ -141,12 +174,13 @@ namespace RebarSolid.ViewModel
                        .OfClass(typeof(RebarInSystem))
                        .Cast<RebarInSystem>()
                        .ToList();
+
                     }
                     else if (SelectedIndex == 1)
                     {
                         try
                         {
-                            rebars = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarFilter(), "Select Rebars and Rebars in Areas")
+                            rebars = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarFilter(), "Выберите стержни")
                                 .Select(x => Doc.GetElement(x))
                                 .Cast<Rebar>()
                                 .ToList();
@@ -156,13 +190,16 @@ namespace RebarSolid.ViewModel
                     }
                     else if (SelectedIndex == 2)
                     {
-                        Reference structuralFraming = UIDoc.Selection.PickObject(ObjectType.Element, "Select structural element");
-                        Element element = Doc.GetElement(structuralFraming);
-
-                        string elementMark = element.get_Parameter(BuiltInParameter.DOOR_NUMBER).AsString();
-
                         try
                         {
+                            PickFilter pickFilter = new PickFilter();
+                            Reference structuralFraming = UIDoc.Selection.PickObject(ObjectType.Element, pickFilter, "Выберите железобетонный элемент (балка, колонна, плита и т.д.)");
+
+                            Element element = Doc.GetElement(structuralFraming);
+
+                            string elementMark = element.get_Parameter(BuiltInParameter.DOOR_NUMBER).AsString();
+
+
                             rebars = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
                                             .OfClass(typeof(Rebar))
                                             .Cast<Rebar>()
@@ -184,15 +221,22 @@ namespace RebarSolid.ViewModel
                             rebar.SetSolidInView(view3D, IsCheckedSolid);
                             rebar.SetUnobscuredInView(view3D, IsCheckedUnobscured);
 
-                            if (IsCheckedOverride)
+                            if (IsCheckedOverrideRed)
                             {
-                                Doc.ActiveView.SetElementOverrides(rebar.Id, overrideGraphicSettings);
+                                Doc.ActiveView.SetElementOverrides(rebar.Id, overrideGraphicRed);
+                            }
+                            if (IsCheckedOverrideBlue)
+                            {
+                                Doc.ActiveView.SetElementOverrides(rebar.Id, overrideGraphicBlue);
+                            }
+                            if (IsCheckedOverrideGreen)
+                            {
+                                Doc.ActiveView.SetElementOverrides(rebar.Id, overrideGraphicGreen);
                             }
                             if (IsCheckedResetOverride)
                             {
                                 Doc.ActiveView.SetElementOverrides(rebar.Id, resetOverrideGraphicSettings);
                             }
-
                         }
 
                         if (rebarsInArea != null)
@@ -202,15 +246,13 @@ namespace RebarSolid.ViewModel
                                 rebarInArea.SetSolidInView(view3D, IsCheckedSolid);
                                 rebarInArea.SetUnobscuredInView(view3D, IsCheckedUnobscured);
                             }
-
                         }
                         tx.Commit();
                     }
                 }
                 else
                 {
-                    TaskDialog.Show("Rebar Host Identification", "Please open a 3D View");
-
+                    TaskDialog.Show("Отображение стержней арматуры", "Откройте 3D вид");
                 }
             }
             catch (Exception ex)
@@ -230,6 +272,23 @@ namespace RebarSolid.ViewModel
         public bool AllowReference(Reference reference, XYZ position)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class PickFilter : ISelectionFilter
+    {
+        public bool AllowElement(Element elem)
+        {
+            bool check = elem.CanHaveAnalyticalModel();
+            if (check == true)
+                return true;
+            else
+                return false;
+        }
+
+        public bool AllowReference(Reference reference, XYZ position)
+        {
+            return false;
         }
     }
 }
