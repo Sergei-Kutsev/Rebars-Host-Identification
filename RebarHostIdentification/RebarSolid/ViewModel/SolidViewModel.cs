@@ -137,7 +137,7 @@ namespace RebarSolid.ViewModel
                                             .Cast<Rebar>()
                                             .ToList();
 
-                        rebarsInArea = new FilteredElementCollector(Doc)
+                        rebarsInArea = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
                        .OfClass(typeof(RebarInSystem))
                        .Cast<RebarInSystem>()
                        .ToList();
