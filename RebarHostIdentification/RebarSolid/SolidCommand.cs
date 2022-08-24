@@ -19,7 +19,7 @@ class SolidCommand : IExternalCommand
     {
         UIDocument uiDoc = commandData.Application.//get access to the UIDocument
             ActiveUIDocument; //get access to the Document
-       // Document doc = uiDoc.Document; //Document is a database of the opened revit project
+       // Document doc = uiDoc.Document; //Document is a database of the current revit project
 
         var vm = new SolidViewModel(uiDoc);
         vm.SolidView.ShowDialog();

@@ -150,6 +150,11 @@ namespace RebarSolid.ViewModel
                                 .Select(x => Doc.GetElement(x))
                                 .Cast<Rebar>()
                                 .ToList();
+
+                            rebarsInArea = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarInSystemFilter(), "Выберите отдельные стержни или площади армирования")
+                                .Select(x => Doc.GetElement(x))
+                                .Cast<RebarInSystem>()
+                                .ToList();
                         }
                         catch
                         { }
@@ -166,6 +171,11 @@ namespace RebarSolid.ViewModel
                             rebars = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
                                             .OfClass(typeof(Rebar))
                                             .Cast<Rebar>()
+                                            .Where(x => x.get_Parameter(BuiltInParameter.REBAR_ELEM_HOST_MARK).AsString() == elementMark)
+                                            .ToList();
+                            rebarsInArea = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
+                                            .OfClass(typeof(RebarInSystem))
+                                            .Cast<RebarInSystem>()
                                             .Where(x => x.get_Parameter(BuiltInParameter.REBAR_ELEM_HOST_MARK).AsString() == elementMark)
                                             .ToList();
                         }
@@ -201,6 +211,16 @@ namespace RebarSolid.ViewModel
                             {
                                 rebarInArea.SetSolidInView(view3D, IsCheckedSolid);
                                 rebarInArea.SetUnobscuredInView(view3D, IsCheckedUnobscured);
+
+                                if (IsCheckedOverride)
+                                {
+                                    Doc.ActiveView.SetElementOverrides(rebarInArea.Id, overrideGraphicSettings);
+                                }
+                                if (IsCheckedResetOverride)
+                                {
+                                    Doc.ActiveView.SetElementOverrides(rebarInArea.Id, resetOverrideGraphicSettings);
+                                }
+
                             }
 
                         }
@@ -225,6 +245,18 @@ namespace RebarSolid.ViewModel
         public bool AllowElement(Element elem)
         {
             return elem.Category != null && elem is Rebar;
+        }
+
+        public bool AllowReference(Reference reference, XYZ position)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class RebarInSystemFilter : ISelectionFilter
+    {
+        public bool AllowElement(Element elem)
+        {
+            return elem.Category != null && elem is RebarInSystem;
         }
 
         public bool AllowReference(Reference reference, XYZ position)
