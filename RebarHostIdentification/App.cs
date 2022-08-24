@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 //rebar.IsSolidInView(currentView)
 public class App : IExternalApplication
 {
-    private static string nameApp = "RebarHostIdentification";
+    private static string nameApp = "Rebars Graphics";
     private static readonly string pathfileDLL = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
 
