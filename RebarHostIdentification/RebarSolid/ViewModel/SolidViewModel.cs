@@ -180,9 +180,14 @@ namespace RebarSolid.ViewModel
                     {
                         try
                         {
-                            rebars = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarFilter(), "Выберите стержни")
+                            rebars = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarFilter(), "Выберите отдельные стержни")
                                 .Select(x => Doc.GetElement(x))
                                 .Cast<Rebar>()
+                                .ToList();
+
+                            rebarsInArea = UIDoc.Selection.PickObjects(ObjectType.Element, new RebarsInAreaFilter(), "Выберите стержни в составе армирования по площади")
+                                .Select(x => Doc.GetElement(x))
+                                .Cast<RebarInSystem>()
                                 .ToList();
                         }
                         catch
@@ -193,7 +198,7 @@ namespace RebarSolid.ViewModel
                         try
                         {
                             PickFilter pickFilter = new PickFilter();
-                            Reference structuralFraming = UIDoc.Selection.PickObject(ObjectType.Element, pickFilter, "Выберите железобетонный элемент (балка, колонна, плита и т.д.)");
+                            Reference structuralFraming = UIDoc.Selection.PickObject(ObjectType.Element, pickFilter, "Выберите железобетонный элемент");
 
                             Element element = Doc.GetElement(structuralFraming);
 
@@ -205,6 +210,12 @@ namespace RebarSolid.ViewModel
                                             .Cast<Rebar>()
                                             .Where(x => x.get_Parameter(BuiltInParameter.REBAR_ELEM_HOST_MARK).AsString() == elementMark)
                                             .ToList();
+
+                            rebarsInArea = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
+                                          .OfClass(typeof(RebarInSystem))
+                                          .Cast<RebarInSystem>()
+                                          .Where(x => x.get_Parameter(BuiltInParameter.REBAR_ELEM_HOST_MARK).AsString() == elementMark)
+                                          .ToList();
                         }
                         catch
                         { }
@@ -245,6 +256,23 @@ namespace RebarSolid.ViewModel
                             {
                                 rebarInArea.SetSolidInView(view3D, IsCheckedSolid);
                                 rebarInArea.SetUnobscuredInView(view3D, IsCheckedUnobscured);
+
+                                if (IsCheckedOverrideRed)
+                                {
+                                    Doc.ActiveView.SetElementOverrides(rebarInArea.Id, overrideGraphicRed);
+                                }
+                                if (IsCheckedOverrideBlue)
+                                {
+                                    Doc.ActiveView.SetElementOverrides(rebarInArea.Id, overrideGraphicBlue);
+                                }
+                                if (IsCheckedOverrideGreen)
+                                {
+                                    Doc.ActiveView.SetElementOverrides(rebarInArea.Id, overrideGraphicGreen);
+                                }
+                                if (IsCheckedResetOverride)
+                                {
+                                    Doc.ActiveView.SetElementOverrides(rebarInArea.Id, resetOverrideGraphicSettings);
+                                }
                             }
                         }
                         tx.Commit();
@@ -267,6 +295,19 @@ namespace RebarSolid.ViewModel
         public bool AllowElement(Element elem)
         {
             return elem.Category != null && elem is Rebar;
+        }
+
+        public bool AllowReference(Reference reference, XYZ position)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class RebarsInAreaFilter : ISelectionFilter
+    {
+        public bool AllowElement(Element elem)
+        {
+            return elem.Category != null && elem is RebarInSystem;
         }
 
         public bool AllowReference(Reference reference, XYZ position)
