@@ -65,6 +65,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="CreateFilterView\FilterViewCommand.cs" />
+    <Compile Include="CreateFilterView\VIewModel\FilterVIewModel.cs" />
+    <Compile Include="CreateFilterView\View\FilterVIew.xaml.cs">
+      <DependentUpon>FilterVIew.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -79,13 +84,15 @@
       <DependentUpon>SolidView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="RebarSolid\Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CreateFilterView\View\FilterVIew.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="RebarSolid\View\SolidView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

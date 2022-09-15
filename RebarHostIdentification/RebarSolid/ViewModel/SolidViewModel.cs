@@ -280,7 +280,7 @@ namespace RebarSolid.ViewModel
                 }
                 else
                 {
-                    TaskDialog.Show("Отображение стержней арматуры", "Откройте 3D вид");
+                    TaskDialog.Show("Отображение арматурных стержней", "Откройте 3D вид");
                 }
             }
             catch (Exception ex)

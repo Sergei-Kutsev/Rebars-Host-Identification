@@ -6,7 +6,7 @@ using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 public class App : IExternalApplication
 {
-    private static string nameApp = "RebarHostIdentification";
+    private static string nameApp = "ReviMate";
     private static readonly string pathfileDLL = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
 
@@ -34,14 +34,26 @@ public class App : IExternalApplication
 
         try
         {
-            RibbonPanel ribbonPanel = uICA.CreateRibbonPanel(nameApp, "General");
+            RibbonPanel ribbonPanelRebars = uICA.CreateRibbonPanel(nameApp, "Rebars");
             try
             {
                 PushButtonData pbd = new PushButtonData("Rebar Identification", "Графика стрежней", pathfileDLL, nameof(SolidCommand));
                 pbd.Image = ConvertIcoToBitmapSource(RebarHostIdentification.Properties.Resources.RebarSolid);
                 pbd.LargeImage = pbd.Image;
 
-                PushButton pb = ribbonPanel.AddItem(pbd) as PushButton;
+                PushButton pb = ribbonPanelRebars.AddItem(pbd) as PushButton;
+            }
+            catch { }
+
+
+            RibbonPanel ribbonPanelViews = uICA.CreateRibbonPanel(nameApp, "ViewFilter");
+            try
+            {
+                PushButtonData pbd = new PushButtonData("Создание фильтра", "Создать фильтр", pathfileDLL, nameof(FilterCommand));
+                pbd.Image = ConvertIcoToBitmapSource(RebarHostIdentification.Properties.Resources.RebarSolid);
+                pbd.LargeImage = pbd.Image;
+
+                PushButton pb = ribbonPanelViews.AddItem(pbd) as PushButton;
             }
             catch { }
         }
