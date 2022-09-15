@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Utilities;
 
-namespace CreateFilterVIew.VIewModel
+namespace CreateFilterView.ViewModel
 {
-    public class FilterVIewModel : ViewModelBase
+    public class FilterViewModel : ViewModelBase
     {
         private Document Doc { get; }
         private UIDocument UIDoc { get; }

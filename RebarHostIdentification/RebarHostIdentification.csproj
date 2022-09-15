@@ -66,9 +66,9 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="CreateFilterView\FilterViewCommand.cs" />
-    <Compile Include="CreateFilterView\VIewModel\FilterVIewModel.cs" />
-    <Compile Include="CreateFilterView\View\FilterVIew.xaml.cs">
-      <DependentUpon>FilterVIew.xaml</DependentUpon>
+    <Compile Include="CreateFilterView\ViewModel\FilterViewModel.cs" />
+    <Compile Include="CreateFilterView\View\FilterView.xaml.cs">
+      <DependentUpon>FilterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -89,7 +89,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="CreateFilterView\View\FilterVIew.xaml">
+    <Page Include="CreateFilterView\View\FilterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

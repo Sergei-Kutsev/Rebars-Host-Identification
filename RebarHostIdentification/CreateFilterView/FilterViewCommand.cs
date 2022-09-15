@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using CreateFilterVIew.VIewModel;
+using CreateFilterView.ViewModel;
 
 [Transaction(TransactionMode.Manual)]
 class FilterViewCommand : IExternalCommand
@@ -11,7 +11,7 @@ class FilterViewCommand : IExternalCommand
     {
         UIDocument uIDoc = commandData.Application.ActiveUIDocument;
 
-      var vm = new FilterVIewModel(uIDoc);
+      var vm = new FilterViewModel(uIDoc);
       vm.FilterView.ShowDialog();
 
         return Result.Succeeded;
